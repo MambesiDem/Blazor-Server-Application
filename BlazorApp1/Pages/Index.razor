@@ -1,0 +1,192 @@
+﻿@page "/"
+@using BlazorApp1.Models
+
+<h3 class="mb-3">Assembly Line Operations</h3>
+
+<button class="btn btn-primary mb-3" @onclick="ShowAddOperationModal">
+    Add Operation
+</button>
+
+@if (ShowDeviceModal)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Device</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeviceModal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Device Name</label>
+                        <input class="form-control" @bind="NewDevice.Name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Device Type</label>
+                        <select class="form-select" @bind="NewDevice.DeviceType">
+                            @foreach (var type in Enum.GetValues<DeviceType>())
+                            {
+                                <option value="@type">@type</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseDeviceModal">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary" @onclick="AddDevice">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order</th>
+            <th>Name</th>
+            <th>Device</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var operation in Operations.OrderBy(o => o.OrderInWhichToPerform))
+        {
+            <tr>
+                <td>@operation.OrderInWhichToPerform</td>
+                <td>@operation.Name</td>
+                <td>
+                    @if (operation.Device != null)
+                    {
+                        <span>
+                            @operation.Device.Name (@operation.Device.DeviceType)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No device</span>
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary"
+                            disabled="@(operation.Device != null)"
+                            @onclick="() => ShowAddDeviceModal(operation)">
+                        Add Device
+                    </button>
+
+                    <button class="btn btn-sm btn-danger ms-2"
+                            @onclick="() => RemoveOperation(operation)">
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (ShowOperationModal)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Operation</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Operation Name</label>
+                        <input class="form-control" @bind="NewOperation.Name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Order</label>
+                        <input type="number"
+                               class="form-control"
+                               @bind="NewOperation.OrderInWhichToPerform" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+                    <button class="btn btn-primary" @onclick="AddOperation">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    List<Operation> Operations = new()
+    {
+        new Operation { OperationID = 1, Name = "Scan Barcode", OrderInWhichToPerform = 1 },
+        new Operation { OperationID = 2, Name = "Print Label", OrderInWhichToPerform = 2 }
+    };
+
+    bool ShowOperationModal = false;
+    bool ShowDeviceModal = false;
+
+    Operation NewOperation = new();
+    Device NewDevice = new();
+    Operation SelectedOperation;
+
+    void ShowAddOperationModal()
+    {
+        NewOperation = new Operation();
+        ShowOperationModal = true;
+    }
+
+    void ShowAddDeviceModal(Operation operation)
+    {
+        SelectedOperation = operation;
+        NewDevice = new Device();
+        ShowDeviceModal = true;
+    }
+
+    void CloseModal()
+    {
+        ShowOperationModal = false;
+    }
+
+    void CloseDeviceModal()
+    {
+        ShowDeviceModal = false;
+    }
+
+    void AddOperation()
+    {
+        if (string.IsNullOrWhiteSpace(NewOperation.Name))
+            return;
+
+        NewOperation.OperationID = Operations.Count + 1;
+        Operations.Add(NewOperation);
+        CloseModal();
+    }
+
+    void AddDevice()
+    {
+        NewDevice.DeviceID = 1;
+        SelectedOperation.Device = NewDevice;
+        CloseDeviceModal();
+    }
+
+    void RemoveOperation(Operation operation)
+    {
+        Operations.Remove(operation);
+    }
+}
+
