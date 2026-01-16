@@ -40,4 +40,4 @@ All data is stored **in memory only**, as persistence was not required.
 
 - Single-page application
 - No database or persistence
-- Built for learning and assessment purposes
+- Built for learning purposes
