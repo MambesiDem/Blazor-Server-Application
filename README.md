@@ -2,10 +2,10 @@
 
 ## Overview
 
-This is a **Blazor Server web application** built using **C# and Razor components**.  
-The application allows users to manage assembly line **operations** and assign **devices** to them.
+This is a Blazor Server web application built using C# and Razor components.  
+The application allows users to manage assembly line operations and assign **devices** to them.
 
-All data is stored **in memory only**, as persistence was not required.
+All data is stored in memory only, as persistence was not required.
 
 ---
 
@@ -30,9 +30,9 @@ All data is stored **in memory only**, as persistence was not required.
 
 ## Running the Application
 
-1. Open the solution in **Visual Studio Community 2022**
-2. Ensure the **ASP.NET and web development** workload is installed
-3. Run the project using **IIS Express** or **Kestrel**
+1. Open the solution in Visual Studio Community 2022
+2. Ensure the ASP.NET and web development workload is installed
+3. Run the project using IIS Express or Kestrel
 
 ---
 
